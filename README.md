@@ -36,12 +36,14 @@
 ## 安装
 
 ```bash
-# 用 skills CLI（Vercel labs）
+# 用 skills CLI（Vercel labs）；根目录 SKILL.md 可被直接发现
 npx skills add <你的用户名>/stepwise-review
+# 例：全局安装到指定 agent、免交互
+npx skills add <你的用户名>/stepwise-review -g -a claude-code -y
 
-# 或手动复制
-cp SKILL.md ~/.zcode/skills/stepwise-review/SKILL.md   # ZCode
-cp SKILL.md ~/.claude/skills/stepwise-review/SKILL.md  # Claude Code
+# 或手动复制（先建目录再拷贝）
+mkdir -p ~/.zcode/skills/stepwise-review && cp SKILL.md ~/.zcode/skills/stepwise-review/   # ZCode
+mkdir -p ~/.claude/skills/stepwise-review && cp SKILL.md ~/.claude/skills/stepwise-review/ # Claude Code
 ```
 
 ## 使用
