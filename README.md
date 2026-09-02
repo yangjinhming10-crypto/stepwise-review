@@ -27,7 +27,10 @@
   提交（步前快照恢复）、非 git（快照模式）；
 - **闭环处置**：两轮打回上限、中途 re-plan（含用户变更需求入口）、终审发现必须
   修复 + 全量回归复验；
-- **落盘恢复**：验证命令登记表 / 实现者摘要 / 判定表落盘，会话中断后可接续；
+- **落盘生命周期**：一次运行一个目录、全部过程状态收敛为**单文件台账**
+  （`ledger.md`，仅控制器追加）；正常完成后**默认清理**运行目录（收尾报告附
+  验证命令清单与副作用标注，删档后仍可复验），`--keep` 留档，中断/异常终止
+  保留现场可接续；
 - **非代码任务适配**：文档、调研类任务以产出文件为审查对象，全文交叉比对；
 - **依赖图拆步**：互不依赖的兄弟步骤显式标注"可并行槽"；登记表记录每步**实际
   影响符号集**，累积回归按符号交集选命令（重跑量不随步数线性增长）；
@@ -36,7 +39,7 @@
 - **受限并行**：可并行槽 + 独立工作区隔离（git worktree）+ 零交集 + **契约抽验
   通过**（耦合边界跑可执行验证，证据背书语义隔离），共享工作区一律串行——
   审查精度优先于吞吐量；
-- **22 个 RED/GREEN 场景自检**内置于 skill 文本，用于变更后的回归验证。
+- **23 个 RED/GREEN 场景自检**内置于 skill 文本，用于变更后的回归验证。
 
 ## 安装
 
@@ -58,6 +61,7 @@ mkdir -p ~/.claude/skills/stepwise-review && cp SKILL.md ~/.claude/skills/stepwi
 /stepwise-review --focus "性能与内存" <需求>
 /stepwise-review --commit yes <需求>
 /stepwise-review --light | --full <需求>
+/stepwise-review --keep <需求>
 ```
 
 | 参数 | 作用 |
@@ -66,6 +70,7 @@ mkdir -p ~/.claude/skills/stepwise-review && cp SKILL.md ~/.claude/skills/stepwi
 | `--commit yes/no` | 预设基线模式，免掉确认时的提问 |
 | `--light` | 强制轻量模式（不满足单步硬条件时忽略并告知） |
 | `--full` | 强制完整模式 |
+| `--keep` | 完成后保留运行目录与台账（默认完成后删除运行目录及外部快照） |
 
 完整的功能走读与使用说明见 [docs/README.md](docs/README.md)，变更记录见
 [docs/CHANGELOG.md](docs/CHANGELOG.md)。
@@ -81,3 +86,7 @@ mkdir -p ~/.claude/skills/stepwise-review && cp SKILL.md ~/.claude/skills/stepwi
 v1.0 经过三个独立评审方（内置子代理 + 两个外部 headless 代理）按统一验收标准
 （内部一致性 / 可执行性 / 关卡完整性 / 失败模式覆盖 / 安全性）验收，全部
 **通过、零阻断项**。验收方式见 [docs/CHANGELOG.md](docs/CHANGELOG.md) 附记。
+
+v1.2 / v1.2.1（留档生命周期）经四路独立审查（omp / opencode / DSH / Agy）：
+三路通过，DSH 初判不通过的 1 条阻断项（系统临时目录快照的清理与恢复缺口）
+连同全部收敛建议已在 v1.2.1 收口，结论明细见 [docs/CHANGELOG.md](docs/CHANGELOG.md)。
